@@ -61,9 +61,9 @@ Then build the tests:
 clang++-18 -Wall -Wextra -Werror -Wconversion -Wshadow -std=c++20 -O3 -I../include memo_cache.cpp -o memo_cache
 ```
 
-### Benchmark build instructions
+### Benchmark
 
-See: https://quick-bench.com/q/BAjUpm2U8zIrTJerlKMl2lMEfQg
+See here: https://quick-bench.com/q/dts7ouKSY8i2QPCthVgqJwKkZrw
 
 ## TODO
 
