@@ -1,6 +1,6 @@
 # memo-cache
 
-A small cache with retention management for memoization.
+A small, fixed-size cache with retention management for memoization.
 
 ## Introduction
 
