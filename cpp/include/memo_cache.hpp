@@ -47,7 +47,7 @@ public:
     }
   }
 
-  [[nodiscard]] std::optional<std::reference_wrapper<Val>> find(const Key &key) {
+  [[nodiscard]] std::optional<std::reference_wrapper<Val>> find(const Key& key) {
     const auto slot = std::ranges::find_if(buffer, [&key](const auto& fSlot) { return !fSlot.empty && (fSlot.key == key); });
     if (slot != buffer.cend()) {
       return std::ref(slot->val);
