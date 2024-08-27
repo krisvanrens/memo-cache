@@ -62,6 +62,21 @@ where
         Self { buffer, cursor: 0 }
     }
 
+    /// Get the (fixed) capacity of the cache.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let c = MemoCache::<u32, String, 8>::new();
+    ///
+    /// assert_eq!(c.capacity(), 8);
+    /// ```
+    pub const fn capacity(&self) -> usize {
+        SIZE
+    }
+
     /// Insert a key/value pair.
     ///
     /// # Examples
@@ -137,6 +152,7 @@ mod tests_internal {
 
         // Verify cache size.
         assert_eq!(c.buffer.len(), SIZE);
+        assert_eq!(c.capacity(), SIZE);
 
         // All slots should be empty.
         assert!(c.buffer.iter().all(|s| s == &KeyValueSlot::Empty));

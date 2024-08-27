@@ -5,6 +5,8 @@ mod tests_external {
     fn test_empty() {
         let c = MemoCache::<bool, bool, 2>::new();
 
+        assert_eq!(c.capacity(), 2);
+
         // NOTE: Even though the cache memory is pre-allocated, each cache slot should be marked as "empty".
         assert!(c.find(true).is_none());
         assert!(c.find(false).is_none());
@@ -13,6 +15,8 @@ mod tests_external {
     #[test]
     fn test_nonempty() {
         let mut c = MemoCache::<String, i32, 3>::new();
+
+        assert_eq!(c.capacity(), 3);
 
         let kvs = vec![("veni", 19), ("vidi", 23), ("vici", 29)];
         let kv0 = kvs.get(0).unwrap();
