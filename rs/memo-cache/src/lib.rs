@@ -119,6 +119,16 @@ where
     }
 }
 
+impl<Key, Val, const SIZE: usize> Default for MemoCache<Key, Val, SIZE>
+where
+    Key: Clone + Default + Eq,
+    Val: Clone + Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
