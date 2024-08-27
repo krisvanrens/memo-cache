@@ -21,20 +21,20 @@ where
 }
 
 /// A small, fixed-size, heap-allocated key/value cache with retention management.
-pub struct MemoCache<Key, Val> {
+pub struct MemoCache<Key, Val, const SIZE: usize> {
     buffer: Vec<KeyValueSlot<Key, Val>>,
     cursor: usize,
 }
 
-impl<Key, Val> MemoCache<Key, Val>
+impl<Key, Val, const SIZE: usize> MemoCache<Key, Val, SIZE>
 where
     Key: Clone + Default + Eq,
     Val: Clone + Default,
 {
-    /// Create a new cache with a fixed size.
-    pub fn new(size: usize) -> Self {
+    /// Create a new cache.
+    pub fn new() -> Self {
         let mut buffer = Vec::new();
-        buffer.resize(size, KeyValueSlot::new());
+        buffer.resize(SIZE, KeyValueSlot::new());
 
         Self { buffer, cursor: 0 }
     }
@@ -81,7 +81,7 @@ mod tests {
     fn test_new() {
         const SIZE: usize = 8;
 
-        let c = MemoCache::<i32, i32>::new(SIZE);
+        let c = MemoCache::<i32, i32, SIZE>::new();
 
         // Verify cache size.
         assert_eq!(c.len(), SIZE);
@@ -93,7 +93,7 @@ mod tests {
 
     #[test]
     fn test_empty() {
-        let c = MemoCache::<bool, bool>::new(2);
+        let c = MemoCache::<bool, bool, 2>::new();
 
         // NOTE: Even though the cache memory is pre-allocated, each cache slot should be marked as "empty".
         assert!(c.find(true).is_none());
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn test_cursor() {
-        let mut c = MemoCache::<i32, i32>::new(2);
+        let mut c = MemoCache::<i32, i32, 2>::new();
 
         assert_eq!(c.cursor, 0);
 
@@ -125,7 +125,7 @@ mod tests {
 
     #[test]
     fn test_nonempty() {
-        let mut c = MemoCache::<String, i32>::new(3);
+        let mut c = MemoCache::<String, i32, 3>::new();
 
         let kvs = vec![("veni", 19), ("vidi", 23), ("vici", 29)];
         let kv0 = kvs.get(0).unwrap();
@@ -165,7 +165,7 @@ mod tests {
 
     #[test]
     fn test_duplicate_insertions() {
-        let mut c = MemoCache::<String, i32>::new(2);
+        let mut c = MemoCache::<String, i32, 2>::new();
 
         let kv0 = ("John", 17);
         let kv1 = ("Doe", 19);
