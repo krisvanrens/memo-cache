@@ -32,6 +32,14 @@ where
     Val: Clone + Default,
 {
     /// Create a new cache.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let c = MemoCache::<u32, String, 4>::new();
+    /// ```
     pub fn new() -> Self {
         let mut buffer = Vec::new();
         buffer.resize(SIZE, KeyValueSlot::new());
@@ -40,11 +48,35 @@ where
     }
 
     /// Get the (fixed) size of the cache.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let c = MemoCache::<u32, String, 4>::new();
+    ///
+    /// assert_eq!(c.len(), 4);
+    /// ```
     pub fn len(&self) -> usize {
         self.buffer.len()
     }
 
     /// Insert a key/value pair.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let mut c = MemoCache::<u32, String, 4>::new();
+    ///
+    /// assert!(c.find(42).is_none());
+    ///
+    /// c.insert(42, "The Answer".to_owned());
+    ///
+    /// assert!(c.find(42).is_some_and(|v| v == "The Answer"));
+    /// ```
     pub fn insert(&mut self, key: Key, val: Val) {
         match self.buffer.iter_mut().find(|e| !e.empty && (e.key == key)) {
             Some(s) => s.val = val,
@@ -65,6 +97,20 @@ where
     }
 
     /// Lookup a cache entry by key.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let mut c = MemoCache::<u32, String, 4>::new();
+    ///
+    /// assert!(c.find(42).is_none());
+    ///
+    /// c.insert(42, "The Answer".to_owned());
+    ///
+    /// assert!(c.find(42).is_some_and(|v| v == "The Answer"));
+    /// ```
     pub fn find(&self, key: Key) -> Option<&Val> {
         self.buffer
             .iter()
