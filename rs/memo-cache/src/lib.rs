@@ -130,7 +130,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_new() {
+    fn test_new_state() {
         const SIZE: usize = 8;
 
         let c = MemoCache::<i32, i32, SIZE>::new();
@@ -152,7 +152,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cursor() {
+    fn test_cursor_state() {
         let mut c = MemoCache::<i32, i32, 2>::new();
 
         assert_eq!(c.cursor, 0);
