@@ -43,8 +43,8 @@ pub struct MemoCache<Key, Val, const SIZE: usize> {
 
 impl<Key, Val, const SIZE: usize> MemoCache<Key, Val, SIZE>
 where
-    Key: Clone + Default + Eq,
-    Val: Clone + Default,
+    Key: Clone + Eq,
+    Val: Clone,
 {
     /// Create a new cache.
     ///
@@ -117,8 +117,8 @@ where
 
 impl<Key, Val, const SIZE: usize> Default for MemoCache<Key, Val, SIZE>
 where
-    Key: Clone + Default + Eq,
-    Val: Clone + Default,
+    Key: Clone + Eq,
+    Val: Clone,
 {
     fn default() -> Self {
         Self::new()
