@@ -76,7 +76,7 @@ where
                 };
 
                 // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
-                self.cursor = (self.cursor + 1) % self.buffer.len();
+                self.cursor = (self.cursor + 1) % SIZE;
             }
         }
     }
