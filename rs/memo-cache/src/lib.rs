@@ -1,21 +1,36 @@
 /// A single key/value slot used in the cache.
-#[derive(Clone)]
-struct KeyValueSlot<Key, Val> {
-    key: Key,
-    val: Val,
-    empty: bool,
+#[derive(Clone, PartialEq)]
+enum KeyValueSlot<Key, Val> {
+    Used((Key, Val)),
+    Empty,
 }
 
 impl<Key, Val> KeyValueSlot<Key, Val>
 where
-    Key: Clone + Default,
-    Val: Clone + Default,
+    Key: Eq,
 {
-    fn new() -> Self {
-        Self {
-            key: Key::default(),
-            val: Val::default(),
-            empty: true,
+    /// Check a used slot key.
+    fn is_key(&self, key: &Key) -> bool {
+        if let KeyValueSlot::Used(kv) = self {
+            kv.0 == *key
+        } else {
+            false
+        }
+    }
+
+    /// Get the value of a used slot.
+    fn get_value(&self) -> Option<&Val> {
+        if let KeyValueSlot::Used(kv) = self {
+            Some(&kv.1)
+        } else {
+            None
+        }
+    }
+
+    /// Update the value of a used slot.
+    fn update_value(&mut self, val: Val) {
+        if let KeyValueSlot::Used(kv) = self {
+            kv.1 = val
         }
     }
 }
@@ -42,7 +57,7 @@ where
     /// ```
     pub fn new() -> Self {
         let mut buffer = Vec::new();
-        buffer.resize(SIZE, KeyValueSlot::new());
+        buffer.resize(SIZE, KeyValueSlot::Empty);
 
         Self { buffer, cursor: 0 }
     }
@@ -63,17 +78,13 @@ where
     /// assert!(c.find(42).is_some_and(|v| v == "The Answer"));
     /// ```
     pub fn insert(&mut self, key: Key, val: Val) {
-        match self.buffer.iter_mut().find(|e| !e.empty && (e.key == key)) {
-            Some(s) => s.val = val,
+        match self.buffer.iter_mut().find(|e| e.is_key(&key)) {
+            Some(s) => s.update_value(val),
             None => {
                 *self
                     .buffer
                     .get_mut(self.cursor)
-                    .expect("invalid cursor value") = KeyValueSlot {
-                    key,
-                    val,
-                    empty: false,
-                };
+                    .expect("invalid cursor value") = KeyValueSlot::Used((key, val));
 
                 // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
                 self.cursor = (self.cursor + 1) % SIZE;
@@ -99,8 +110,8 @@ where
     pub fn find(&self, key: Key) -> Option<&Val> {
         self.buffer
             .iter()
-            .find(|e| !e.empty && (e.key == key))
-            .map(|e| &e.val)
+            .find(|e| e.is_key(&key))
+            .map(|e| e.get_value().unwrap())
     }
 }
 
@@ -128,7 +139,7 @@ mod tests {
         assert_eq!(c.buffer.len(), SIZE);
 
         // All slots should be empty.
-        assert!(c.buffer.iter().all(|s| s.empty));
+        assert!(c.buffer.iter().all(|s| s == &KeyValueSlot::Empty));
     }
 
     #[test]
