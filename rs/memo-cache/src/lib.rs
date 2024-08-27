@@ -47,21 +47,6 @@ where
         Self { buffer, cursor: 0 }
     }
 
-    /// Get the (fixed) size of the cache.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use memo_cache::MemoCache;
-    ///
-    /// let c = MemoCache::<u32, String, 4>::new();
-    ///
-    /// assert_eq!(c.len(), 4);
-    /// ```
-    pub fn len(&self) -> usize {
-        self.buffer.len()
-    }
-
     /// Insert a key/value pair.
     ///
     /// # Examples
@@ -140,7 +125,6 @@ mod tests {
         let c = MemoCache::<i32, i32, SIZE>::new();
 
         // Verify cache size.
-        assert_eq!(c.len(), SIZE);
         assert_eq!(c.buffer.len(), SIZE);
 
         // All slots should be empty.
