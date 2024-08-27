@@ -35,7 +35,7 @@ impl Process {
     }
 
     fn memoized_method2(&mut self, input: u32) -> f32 {
-        if let Some(value) = self.cache2.get(input) {
+        if let Some(value) = self.cache2.get(&input) {
             *value
         } else {
             let result = some_expensive_calculation(input);
