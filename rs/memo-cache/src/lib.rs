@@ -86,11 +86,11 @@ where
     ///
     /// let mut c = MemoCache::<u32, String, 4>::new();
     ///
-    /// assert!(c.find(42).is_none());
+    /// assert!(c.get(42).is_none());
     ///
     /// c.insert(42, "The Answer".to_owned());
     ///
-    /// assert!(c.find(42).is_some_and(|v| v == "The Answer"));
+    /// assert!(c.get(42).is_some_and(|v| v == "The Answer"));
     /// ```
     pub fn insert(&mut self, key: Key, val: Val) {
         match self.buffer.iter_mut().find(|e| e.is_key(&key)) {
@@ -116,13 +116,13 @@ where
     ///
     /// let mut c = MemoCache::<u32, String, 4>::new();
     ///
-    /// assert!(c.find(42).is_none());
+    /// assert!(c.get(42).is_none());
     ///
     /// c.insert(42, "The Answer".to_owned());
     ///
-    /// assert!(c.find(42).is_some_and(|v| v == "The Answer"));
+    /// assert!(c.get(42).is_some_and(|v| v == "The Answer"));
     /// ```
-    pub fn find(&self, key: Key) -> Option<&Val> {
+    pub fn get(&self, key: Key) -> Option<&Val> {
         self.buffer
             .iter()
             .find(|e| e.is_key(&key))
