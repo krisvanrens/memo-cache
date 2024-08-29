@@ -1,3 +1,22 @@
+use core::borrow::Borrow;
+
+/// Key equivalence trait, to support `Borrow` types as keys.
+trait Equivalent<K: ?Sized> {
+    /// Returns `true` if two values are equivalent, `false` if otherwise.
+    fn equivalent(&self, k: &K) -> bool;
+}
+
+impl<Q: ?Sized, K: ?Sized> Equivalent<K> for Q
+where
+    Q: Eq,
+    K: Borrow<Q>,
+{
+    #[inline]
+    fn equivalent(&self, k: &K) -> bool {
+        self == k.borrow()
+    }
+}
+
 /// A single key/value slot used in the cache.
 #[derive(Clone, PartialEq)]
 enum KeyValueSlot<K, V> {
@@ -5,14 +24,14 @@ enum KeyValueSlot<K, V> {
     Empty,
 }
 
-impl<K, V> KeyValueSlot<K, V>
-where
-    K: Eq,
-{
-    /// Check a used slot key.
-    fn is_key(&self, k: &K) -> bool {
+impl<K, V> KeyValueSlot<K, V> {
+    /// Check a used slot key for equivalence.
+    fn is_key<Q>(&self, k: &Q) -> bool
+    where
+        Q: Equivalent<K> + ?Sized,
+    {
         if let KeyValueSlot::Used(kv) = self {
-            kv.0 == *k
+            k.equivalent(&kv.0)
         } else {
             false
         }
@@ -122,10 +141,15 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
     /// ```
-    pub fn get(&self, k: &K) -> Option<&V> {
+    #[inline]
+    pub fn get<Q>(&self, k: &Q) -> Option<&V>
+    where
+        K: Borrow<Q>,
+        Q: Eq + ?Sized,
+    {
         self.buffer
             .iter()
-            .find(|e| e.is_key(&k))
+            .find(|e| e.is_key(k))
             .map(|e| e.get_value().unwrap())
     }
 }
