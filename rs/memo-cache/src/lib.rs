@@ -1,25 +1,25 @@
 /// A single key/value slot used in the cache.
 #[derive(Clone, PartialEq)]
-enum KeyValueSlot<Key, Val> {
-    Used((Key, Val)),
+enum KeyValueSlot<K, V> {
+    Used((K, V)),
     Empty,
 }
 
-impl<Key, Val> KeyValueSlot<Key, Val>
+impl<K, V> KeyValueSlot<K, V>
 where
-    Key: Eq,
+    K: Eq,
 {
     /// Check a used slot key.
-    fn is_key(&self, key: &Key) -> bool {
+    fn is_key(&self, k: &K) -> bool {
         if let KeyValueSlot::Used(kv) = self {
-            kv.0 == *key
+            kv.0 == *k
         } else {
             false
         }
     }
 
     /// Get the value of a used slot.
-    fn get_value(&self) -> Option<&Val> {
+    fn get_value(&self) -> Option<&V> {
         if let KeyValueSlot::Used(kv) = self {
             Some(&kv.1)
         } else {
@@ -28,23 +28,23 @@ where
     }
 
     /// Update the value of a used slot.
-    fn update_value(&mut self, val: Val) {
+    fn update_value(&mut self, v: V) {
         if let KeyValueSlot::Used(kv) = self {
-            kv.1 = val
+            kv.1 = v
         }
     }
 }
 
 /// A small, fixed-size, heap-allocated key/value cache with retention management.
-pub struct MemoCache<Key, Val, const SIZE: usize> {
-    buffer: Vec<KeyValueSlot<Key, Val>>,
+pub struct MemoCache<K, V, const SIZE: usize> {
+    buffer: Vec<KeyValueSlot<K, V>>,
     cursor: usize,
 }
 
-impl<Key, Val, const SIZE: usize> MemoCache<Key, Val, SIZE>
+impl<K, V, const SIZE: usize> MemoCache<K, V, SIZE>
 where
-    Key: Clone + Eq,
-    Val: Clone,
+    K: Clone + Eq,
+    V: Clone,
 {
     /// Create a new cache.
     ///
@@ -92,14 +92,14 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
     /// ```
-    pub fn insert(&mut self, key: Key, val: Val) {
-        match self.buffer.iter_mut().find(|e| e.is_key(&key)) {
-            Some(s) => s.update_value(val),
+    pub fn insert(&mut self, k: K, v: V) {
+        match self.buffer.iter_mut().find(|e| e.is_key(&k)) {
+            Some(s) => s.update_value(v),
             None => {
                 *self
                     .buffer
                     .get_mut(self.cursor)
-                    .expect("invalid cursor value") = KeyValueSlot::Used((key, val));
+                    .expect("invalid cursor value") = KeyValueSlot::Used((k, v));
 
                 // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
                 self.cursor = (self.cursor + 1) % SIZE;
@@ -122,18 +122,18 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
     /// ```
-    pub fn get(&self, key: &Key) -> Option<&Val> {
+    pub fn get(&self, k: &K) -> Option<&V> {
         self.buffer
             .iter()
-            .find(|e| e.is_key(&key))
+            .find(|e| e.is_key(&k))
             .map(|e| e.get_value().unwrap())
     }
 }
 
-impl<Key, Val, const SIZE: usize> Default for MemoCache<Key, Val, SIZE>
+impl<K, V, const SIZE: usize> Default for MemoCache<K, V, SIZE>
 where
-    Key: Clone + Eq,
-    Val: Clone,
+    K: Clone + Eq,
+    V: Clone,
 {
     fn default() -> Self {
         Self::new()
