@@ -7,3 +7,9 @@ edition = "2021"
 
 [dev-dependencies]
 rand = "0.8.5"
+
+[features]
+default = ["inline-more"]
+
+# Enable more inlining of functions at the cost of compile time (enabled by default).
+inline-more = []

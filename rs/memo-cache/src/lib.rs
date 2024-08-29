@@ -11,7 +11,6 @@ where
     Q: Eq,
     K: Borrow<Q>,
 {
-    #[inline]
     fn equivalent(&self, k: &K) -> bool {
         self == k.borrow()
     }
@@ -26,7 +25,7 @@ enum KeyValueSlot<K, V> {
 
 impl<K, V> KeyValueSlot<K, V> {
     /// Check a used slot key for equivalence.
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     fn is_key<Q>(&self, k: &Q) -> bool
     where
         Q: Equivalent<K> + ?Sized,
@@ -39,7 +38,7 @@ impl<K, V> KeyValueSlot<K, V> {
     }
 
     /// Get the value of a used slot.
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     fn get_value(&self) -> Option<&V> {
         if let KeyValueSlot::Used(kv) = self {
             Some(&kv.1)
@@ -49,7 +48,7 @@ impl<K, V> KeyValueSlot<K, V> {
     }
 
     /// Update the value of a used slot.
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     fn update_value(&mut self, v: V) {
         if let KeyValueSlot::Used(kv) = self {
             kv.1 = v
@@ -77,7 +76,7 @@ where
     ///
     /// let c = MemoCache::<u32, String, 4>::new();
     /// ```
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     pub fn new() -> Self {
         let mut buffer = Vec::new();
         buffer.resize(SIZE, KeyValueSlot::Empty);
@@ -96,7 +95,7 @@ where
     ///
     /// assert_eq!(c.capacity(), 8);
     /// ```
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     pub const fn capacity(&self) -> usize {
         SIZE
     }
@@ -116,7 +115,7 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
     /// ```
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     pub fn insert(&mut self, k: K, v: V) {
         match self.buffer.iter_mut().find(|e| e.is_key(&k)) {
             Some(s) => s.update_value(v),
