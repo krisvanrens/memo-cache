@@ -72,4 +72,5 @@ See here: https://quick-bench.com/q/FL6ztFdd_5E07Im9op46L4AH6pA
 - Remove platform-dependent instructions.
 - Re-consider "LRU" aspect i.c.w. cursor movement.
 - Rust: add `get_mut` like `HashMap` has.
+- Consider an alternative for `Vec` for `[nostd]` support.
 
