@@ -71,7 +71,6 @@ See here: https://quick-bench.com/q/FL6ztFdd_5E07Im9op46L4AH6pA
 - Workout benchmarks in more detail.
 - Remove platform-dependent instructions.
 - Re-consider "LRU" aspect i.c.w. cursor movement.
-- Rust: model `insert` after `HashMap`'s `insert` method.
 - Rust: model `get` after `HashMap`'s `get` method.
 - Rust: add `get_mut` like `HashMap` has.
 
