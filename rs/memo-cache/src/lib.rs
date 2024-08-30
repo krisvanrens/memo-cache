@@ -47,6 +47,16 @@ impl<K, V> KeyValueSlot<K, V> {
         }
     }
 
+    /// Get the value of a used slot (for mutation).
+    #[cfg_attr(feature = "inline-more", inline)]
+    fn get_value_mut(&mut self) -> Option<&mut V> {
+        if let KeyValueSlot::Used(kv) = self {
+            Some(&mut kv.1)
+        } else {
+            None
+        }
+    }
+
     /// Update the value of a used slot.
     #[cfg_attr(feature = "inline-more", inline)]
     fn update_value(&mut self, v: V) {
@@ -156,6 +166,35 @@ where
             .iter()
             .find(|e| e.is_key(k))
             .map(|e| e.get_value().unwrap())
+    }
+
+    /// Lookup a cache entry by key (for mutation).
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let mut c = MemoCache::<u32, String, 4>::new();
+    ///
+    /// c.insert(42, "The Answer".to_owned());
+    ///
+    /// if let Some(v) = c.get_mut(&42) {
+    ///     *v = "Another Answer".to_owned();
+    /// }
+    ///
+    /// assert!(c.get(&42).is_some_and(|v| v == "Another Answer"));
+    /// ```
+    #[inline]
+    pub fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
+    where
+        K: Borrow<Q>,
+        Q: Eq + ?Sized,
+    {
+        self.buffer
+            .iter_mut()
+            .find(|e| e.is_key(k))
+            .map(|e| e.get_value_mut().unwrap())
     }
 }
 

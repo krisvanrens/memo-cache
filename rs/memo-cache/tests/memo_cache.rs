@@ -13,6 +13,34 @@ mod tests_external {
     }
 
     #[test]
+    fn test_get() {
+        let mut c = MemoCache::<&str, i32, 3>::new();
+
+        assert_eq!(c.get("hello"), None);
+
+        c.insert("hello", 42);
+
+        assert_eq!(c.get("hello"), Some(&42));
+    }
+
+    #[test]
+    fn test_get_mut() {
+        let mut c = MemoCache::<&str, i32, 3>::new();
+
+        assert_eq!(c.get_mut("hello"), None);
+
+        c.insert("hello", 42);
+
+        if let Some(v) = c.get_mut("hello") {
+            assert_eq!(v, &mut 42);
+
+            *v = 100;
+        }
+
+        assert_eq!(c.get("hello"), Some(&100));
+    }
+
+    #[test]
     fn test_nonempty() {
         let mut c = MemoCache::<String, i32, 3>::new();
 
