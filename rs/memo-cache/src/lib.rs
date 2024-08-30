@@ -117,13 +117,13 @@ where
     /// ```
     /// use memo_cache::MemoCache;
     ///
-    /// let mut c = MemoCache::<u32, String, 4>::new();
+    /// let mut c = MemoCache::<u32, &str, 4>::new();
     ///
-    /// assert!(c.get(&42).is_none());
+    /// assert_eq!(c.get(&42), None);
     ///
-    /// c.insert(42, "The Answer".to_owned());
+    /// c.insert(42, "The Answer");
     ///
-    /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
+    /// assert_eq!(c.get(&42), Some(&"The Answer"));
     /// ```
     #[cfg_attr(feature = "inline-more", inline)]
     pub fn insert(&mut self, k: K, v: V) {
@@ -148,13 +148,13 @@ where
     /// ```
     /// use memo_cache::MemoCache;
     ///
-    /// let mut c = MemoCache::<u32, String, 4>::new();
+    /// let mut c = MemoCache::<u32, &str, 4>::new();
     ///
-    /// assert!(c.get(&42).is_none());
+    /// assert_eq!(c.get(&42), None);
     ///
-    /// c.insert(42, "The Answer".to_owned());
+    /// c.insert(42, "The Answer");
     ///
-    /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
+    /// assert_eq!(c.get(&42), Some(&"The Answer"));
     /// ```
     #[cfg_attr(feature = "inline-more", inline)]
     pub fn get<Q>(&self, k: &Q) -> Option<&V>
@@ -175,15 +175,15 @@ where
     /// ```
     /// use memo_cache::MemoCache;
     ///
-    /// let mut c = MemoCache::<u32, String, 4>::new();
+    /// let mut c = MemoCache::<u32, &str, 4>::new();
     ///
-    /// c.insert(42, "The Answer".to_owned());
+    /// c.insert(42, "The Answer");
     ///
     /// if let Some(v) = c.get_mut(&42) {
-    ///     *v = "Another Answer".to_owned();
+    ///     *v = "Another Answer";
     /// }
     ///
-    /// assert!(c.get(&42).is_some_and(|v| v == "Another Answer"));
+    /// assert_eq!(c.get(&42), Some(&"Another Answer"));
     /// ```
     #[cfg_attr(feature = "inline-more", inline)]
     pub fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
