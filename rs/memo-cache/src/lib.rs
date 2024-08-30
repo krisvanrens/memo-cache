@@ -156,7 +156,7 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "The Answer"));
     /// ```
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     pub fn get<Q>(&self, k: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -185,7 +185,7 @@ where
     ///
     /// assert!(c.get(&42).is_some_and(|v| v == "Another Answer"));
     /// ```
-    #[inline]
+    #[cfg_attr(feature = "inline-more", inline)]
     pub fn get_mut<Q>(&mut self, k: &Q) -> Option<&mut V>
     where
         K: Borrow<Q>,
