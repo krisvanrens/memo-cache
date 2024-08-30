@@ -50,6 +50,21 @@ mod tests_external {
     }
 
     #[test]
+    fn test_clear() {
+        let mut c = MemoCache::<&str, i32, 3>::new();
+
+        assert_eq!(c.get("hello"), None);
+
+        c.insert("hello", 42);
+
+        assert_eq!(c.get("hello"), Some(&42));
+
+        c.clear();
+
+        assert_eq!(c.get("hello"), None);
+    }
+
+    #[test]
     fn test_nonempty() {
         let mut c = MemoCache::<String, i32, 3>::new();
 

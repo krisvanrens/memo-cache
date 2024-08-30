@@ -196,6 +196,33 @@ where
             .find(|e| e.is_key(k))
             .map(|e| e.get_value_mut().unwrap())
     }
+
+    /// Clear the cache.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use memo_cache::MemoCache;
+    ///
+    /// let mut c = MemoCache::<u32, &str, 4>::new();
+    ///
+    /// assert_eq!(c.get(&42), None);
+    ///
+    /// c.insert(42, "The Answer");
+    ///
+    /// assert_eq!(c.get(&42), Some(&"The Answer"));
+    ///
+    /// c.clear();
+    ///
+    /// assert_eq!(c.get(&42), None);
+    ///
+    #[cfg_attr(feature = "inline-more", inline)]
+    pub fn clear(&mut self) {
+        self.buffer
+            .iter_mut()
+            .for_each(|e| *e = KeyValueSlot::Empty);
+        self.cursor = 0;
+    }
 }
 
 impl<K, V, const SIZE: usize> Default for MemoCache<K, V, SIZE>
