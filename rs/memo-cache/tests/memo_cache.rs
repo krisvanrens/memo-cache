@@ -16,7 +16,7 @@ mod tests_external {
     fn test_simple() {
         let mut c = MemoCache::<_, _, 3>::new();
 
-        c.insert("The Answer", 42);
+        c.insert("The Answer", 42); // K = &str, V = i32
 
         assert_eq!(c.get("The Answer"), Some(&42));
     }
