@@ -8,8 +8,8 @@ mod tests_external {
         assert_eq!(c.capacity(), 2);
 
         // NOTE: Even though the cache memory is pre-allocated, each cache slot should be marked as "empty".
-        assert!(c.get(&true).is_none());
-        assert!(c.get(&false).is_none());
+        assert_eq!(c.get(&true), None);
+        assert_eq!(c.get(&false), None);
     }
 
     #[test]
@@ -55,9 +55,9 @@ mod tests_external {
         let kv1 = kvs.get(1).unwrap();
         let kv2 = kvs.get(2).unwrap();
 
-        assert!(c.get(&kv0.0).is_none());
-        assert!(c.get(&kv1.0).is_none());
-        assert!(c.get(&kv2.0).is_none());
+        assert_eq!(c.get(&kv0.0), None);
+        assert_eq!(c.get(&kv1.0), None);
+        assert_eq!(c.get(&kv2.0), None);
 
         c.insert(kv0.0.clone(), kv0.1);
 
@@ -75,15 +75,15 @@ mod tests_external {
 
         c.insert("blah".to_owned(), 42);
 
-        assert!(c.get(&kv0.0).is_none());
-        assert!(c.get(&kv1.0).is_some());
-        assert!(c.get(&kv2.0).is_some());
+        assert_eq!(c.get(&kv0.0), None);
+        assert_eq!(c.get(&kv1.0), Some(&kv1.1));
+        assert_eq!(c.get(&kv2.0), Some(&kv2.1));
 
         c.insert("bleh".to_owned(), 42);
         c.insert("bloh".to_owned(), 42);
 
-        assert!(c.get(&kv1.0).is_none());
-        assert!(c.get(&kv2.0).is_none());
+        assert_eq!(c.get(&kv1.0), None);
+        assert_eq!(c.get(&kv2.0), None);
     }
 
     #[test]
@@ -93,21 +93,21 @@ mod tests_external {
         let kv0 = ("John".to_owned(), 17);
         let kv1 = ("Doe".to_owned(), 19);
 
-        assert!(c.get(&kv0.0).is_none());
-        assert!(c.get(&kv1.0).is_none());
+        assert_eq!(c.get(&kv0.0), None);
+        assert_eq!(c.get(&kv1.0), None);
 
         c.insert(kv0.0.to_owned(), kv0.1);
         c.insert(kv1.0.to_owned(), kv1.1);
 
-        assert!(c.get(&kv0.0).is_some());
-        assert!(c.get(&kv1.0).is_some());
+        assert_eq!(c.get(&kv0.0), Some(&kv0.1));
+        assert_eq!(c.get(&kv1.0), Some(&kv1.1));
 
         // Inserting a duplicate key/value should be a no-op.
 
         c.insert(kv0.0.to_owned(), kv0.1);
 
-        assert!(c.get(&kv0.0).is_some());
-        assert!(c.get(&kv1.0).is_some());
+        assert_eq!(c.get(&kv0.0), Some(&kv0.1));
+        assert_eq!(c.get(&kv1.0), Some(&kv1.1));
 
         // Inserting a duplicate key with a new value should update the value.
 
