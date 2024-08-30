@@ -13,6 +13,15 @@ mod tests_external {
     }
 
     #[test]
+    fn test_simple() {
+        let mut c = MemoCache::<_, _, 3>::new();
+
+        c.insert("The Answer", 42);
+
+        assert_eq!(c.get("The Answer"), Some(&42));
+    }
+
+    #[test]
     fn test_get() {
         let mut c = MemoCache::<&str, i32, 3>::new();
 
