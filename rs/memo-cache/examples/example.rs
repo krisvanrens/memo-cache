@@ -93,13 +93,9 @@ fn main() {
     println!("Memoized (hash):      {} ms", d_memoized1.as_millis());
     println!("Memoized (MemoCache): {} ms", d_memoized2.as_millis());
 
+    let get_size = |capacity| capacity * (std::mem::size_of::<u32>() + std::mem::size_of::<f32>());
+
     println!("Post-test occupied cache sizes:");
-    println!(
-        "  Hash: {} bytes",
-        p.cache1.capacity() * (std::mem::size_of::<u32>() + std::mem::size_of::<f32>())
-    );
-    println!(
-        "  MemoCache: {} bytes",
-        p.cache2.capacity() * (std::mem::size_of::<u32>() + std::mem::size_of::<f32>())
-    );
+    println!("  Hash:      {} bytes", get_size(p.cache1.capacity()));
+    println!("  MemoCache: {} bytes", get_size(p.cache2.capacity()));
 }
