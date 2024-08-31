@@ -65,6 +65,17 @@ mod tests_external {
     }
 
     #[test]
+    fn test_borrow() {
+        let mut c = MemoCache::<String, i32, 3>::new();
+
+        c.insert("hello".to_owned(), 42);
+
+        // Get using borrowed type.
+        assert_eq!(c.get("hello"), Some(&42));
+        assert_eq!(c.get_mut("hello"), Some(&mut 42));
+    }
+
+    #[test]
     fn test_nonempty() {
         let mut c = MemoCache::<String, i32, 3>::new();
 
