@@ -8,6 +8,7 @@ edition = "2021"
 [dev-dependencies]
 criterion = { version = "0.5.1", features = ["html_reports"] }
 rand = "0.8.5"
+rand_distr = "0.4.3"
 
 [features]
 default = ["inline-more"]
