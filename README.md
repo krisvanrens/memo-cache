@@ -71,5 +71,4 @@ See here: https://quick-bench.com/q/FL6ztFdd_5E07Im9op46L4AH6pA
 - Workout benchmarks in more detail.
 - Remove platform-dependent instructions.
 - Re-consider "LRU" aspect i.c.w. cursor movement.
-- Consider an alternative for `Vec` for `[no_std]` support (using an array for instance).
 

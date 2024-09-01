@@ -1,3 +1,5 @@
+#![no_std]
+
 use core::borrow::Borrow;
 
 /// Key equivalence trait, to support `Borrow` types as keys.
@@ -68,7 +70,7 @@ impl<K, V> KeyValueSlot<K, V> {
 
 /// A small, fixed-size, heap-allocated key/value cache with retention management.
 pub struct MemoCache<K, V, const SIZE: usize> {
-    buffer: Vec<KeyValueSlot<K, V>>,
+    buffer: [KeyValueSlot<K, V>; SIZE],
     cursor: usize,
 }
 
@@ -88,10 +90,10 @@ where
     /// ```
     #[cfg_attr(feature = "inline-more", inline)]
     pub fn new() -> Self {
-        let mut buffer = Vec::new();
-        buffer.resize(SIZE, KeyValueSlot::Empty);
-
-        Self { buffer, cursor: 0 }
+        Self {
+            buffer: [const { KeyValueSlot::Empty }; SIZE],
+            cursor: 0,
+        }
     }
 
     /// Get the (fixed) capacity of the cache.
