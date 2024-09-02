@@ -25,7 +25,7 @@ That's why this cache will only be beneficial performance-wise when used with a 
 Looking up items from the cache uses a linear search function, and storage is in FIFO order, resulting in O(N) complexity for `find()`.
 In C++ for example, This lookup complexity is easily outperformed by `find()` on `std::map` (O(log N)) or `std::unordered_map` (constant to O(N)), however both of which do not implement retention management.
 
-## The C++ version
+## Usage
 
 This library is written in C++20, and can be used as a single-header library by directly including the file `cpp/include/memo_cache.hpp`.
 
