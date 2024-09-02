@@ -1,12 +1,12 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <concepts>
 #include <cstddef>
 #include <functional>
 #include <optional>
 #include <utility>
-#include <vector>
 
 inline namespace v1 {
 
@@ -18,32 +18,36 @@ class memo_cache {
   static_assert(Size > 0);
   static_assert(Size <= 128, "Semantic constraint: use this cache for small sizes only (see performance notes).");
 
-public:
-  memo_cache() {
-    buffer.resize(Size);
-    cursor = buffer.begin();
-  }
+  template<typename K = Key, typename V = Val> struct key_value_slot_t {
+    K key;
+    V val;
+    bool empty = true;
+  };
 
+  using buffer_t = std::array<key_value_slot_t<Key, Val>, Size>;
+
+  buffer_t buffer;
+  std::size_t cursor{};
+
+public:
   /// Get the (fixed) size of the cache.
   [[nodiscard]] constexpr std::size_t size() const noexcept {
     return Size;
   }
 
   /// Insert a key/value pair.
-  template<typename Key_, typename Val_>
-  void insert(Key_&& key, Val_&& val) requires(std::assignable_from<Key, Key_> || std::convertible_to<Key_, Key>)
-                                           && (std::assignable_from<Val, Val_> || std::convertible_to<Val_, Val>)
+  template <typename Key_, typename Val_>
+  void insert(Key_&& key, Val_&& val) requires (std::assignable_from<Key, Key_> || std::convertible_to<Key_, Key>)
+                                            && (std::assignable_from<Val, Val_> || std::convertible_to<Val_, Val>)
   {
     // Overwrite values for identical keys.
     if (auto found = find(key); found) {
       found.value().get() = std::forward<Val_>(val);
     } else {
-      *cursor = {.key = std::forward<Key_>(key), .val = std::forward<Val_>(val), .empty = false};
+      buffer[cursor] = {.key = std::forward<Key_>(key), .val = std::forward<Val_>(val), .empty = false};
 
       // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
-      if (++cursor == buffer.end()) {
-        cursor = buffer.begin(); // Wrap; overwrite the oldest element next time around.
-      }
+      cursor = (cursor + 1) % Size; // Wrap; overwrite the oldest element next time around.
     }
   }
 
@@ -56,20 +60,6 @@ public:
       return std::nullopt;
     }
   }
-
-private:
-  template<typename K = Key, typename V = Val>
-  struct key_value_slot_t {
-    K    key;
-    V    val;
-    bool empty = true;
-  };
-
-  using buffer_t = std::vector<key_value_slot_t<Key, Val>>;
-  using cursor_t = typename buffer_t::iterator;
-
-  buffer_t buffer;
-  cursor_t cursor;
 };
 
 } // namespace v1
