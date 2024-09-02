@@ -63,7 +63,7 @@ clang++-18 -Wall -Wextra -Werror -Wconversion -Wshadow -std=c++20 -O3 -I../inclu
 
 ### Benchmark
 
-See here: https://quick-bench.com/q/FL6ztFdd_5E07Im9op46L4AH6pA
+See here: https://quick-bench.com/q/7sBFm5NaPWqhhDFrynIwmAx9Kx4
 
 ## TODO
 
