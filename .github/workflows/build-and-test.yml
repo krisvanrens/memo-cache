@@ -1,0 +1,25 @@
+name: build-and-test
+on:
+  push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: gcc:14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Doctest
+        run: |
+          apt update -y
+          apt install -y doctest-dev
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          gcc -std=c++20 -Wall -Wextra -Wconversion -Werror -I../include ../tests/memo_cache.cpp -o memo_cache
+
+      - name: Test
+        run: |
+          cd build
+          ./memo_cache -s
