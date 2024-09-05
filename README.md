@@ -1,3 +1,5 @@
+![build status](https://github.com/krisvanrens/memo-cache/actions/workflows/build-and-test.yml/badge.svg)
+
 # memo-cache
 
 A small, fixed-size cache with retention management for memoization.
