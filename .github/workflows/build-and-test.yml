@@ -17,7 +17,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          gcc -std=c++20 -Wall -Wextra -Wconversion -Werror -I../include ../tests/memo_cache.cpp -o memo_cache
+          g++ -std=c++20 -Wall -Wextra -Wconversion -Werror -I../include ../tests/memo_cache.cpp -o memo_cache
 
       - name: Test
         run: |
