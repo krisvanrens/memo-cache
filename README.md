@@ -58,7 +58,9 @@ Install `doctest-dev` from the package repository, or get it [here](https://gith
 Then build the tests:
 
 ```
-clang++-18 -Wall -Wextra -Werror -Wconversion -Wshadow -std=c++20 -O3 -I../include memo_cache.cpp -o memo_cache
+mkdir build
+cd build
+clang++-18 -std=c++20 -Wall -Wextra -Werror -Wconversion -O3 -I../include ../tests/memo_cache.cpp -o memo_cache
 ```
 
 ### Benchmark
@@ -72,3 +74,6 @@ See here: https://quick-bench.com/q/7sBFm5NaPWqhhDFrynIwmAx9Kx4
 - Remove platform-dependent instructions.
 - Re-consider "LRU" aspect i.c.w. cursor movement.
 
+## License
+
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
