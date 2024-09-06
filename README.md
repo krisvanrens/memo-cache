@@ -91,4 +91,4 @@ See here: https://quick-bench.com/q/NG9pFDcSWBmG3xWWoL_O45IgDUk
 
 ## License
 
-Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT) at your option.
+This software is licensed under the [MIT license](LICENSE).
