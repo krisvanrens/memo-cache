@@ -67,7 +67,7 @@ clang++-18 -std=c++20 -Wall -Wextra -Werror -Wconversion -O3 -I../include ../tes
 
 ### Benchmark
 
-See here: https://quick-bench.com/q/7sBFm5NaPWqhhDFrynIwmAx9Kx4
+See here: https://quick-bench.com/q/NG9pFDcSWBmG3xWWoL_O45IgDUk
 
 ## TODO
 
