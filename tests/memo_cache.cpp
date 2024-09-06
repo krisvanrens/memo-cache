@@ -18,6 +18,17 @@ TEST_SUITE("memo_cache")
     CHECK_EQ(c.size(), SIZE);
   }
 
+  TEST_CASE("Contains")
+  {
+    memo_cache<std::string, int, 3> c;
+
+    CHECK_FALSE(c.contains("hello"));
+
+    c.insert("hello", 42);
+
+    CHECK(c.contains("hello"));
+  }
+
   TEST_CASE("Clear")
   {
     memo_cache<std::string, int, 3> c;

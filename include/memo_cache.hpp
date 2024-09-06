@@ -104,6 +104,26 @@ public:
     }
   }
 
+  /// Returns `true` if the cache contains a value for the specified key.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<int, std::string, 4> c;
+  ///
+  /// assert(!c.contains(42));
+  ///
+  /// c.insert(42, "The Answer");
+  ///
+  /// assert(c.contains(42));
+  /// ```
+  [[nodiscard]] bool contains(const Key& key) const {
+    return std::ranges::any_of(buffer, [&key](const auto& fSlot) { return !fSlot.empty && (fSlot.key == key); });
+  }
+
   /// Clear the cache.
   ///
   /// # Examples
