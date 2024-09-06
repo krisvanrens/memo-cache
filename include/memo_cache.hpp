@@ -31,12 +31,39 @@ class memo_cache {
 
 public:
   /// Get the (fixed) size of the cache.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<std::string, float, 4> c;
+  ///
+  /// assert(c.size() == 4);
+  /// ```
   [[nodiscard]] constexpr std::size_t size() const noexcept {
     return Size;
   }
 
   /// Insert a key/value pair.
-  template <typename Key_, typename Val_>
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<std::string, float, 4> c;
+  ///
+  /// assert(!c.find("hello").has_value());
+  ///
+  /// c.insert("hello", 42);
+  ///
+  /// assert(c.find("hello").has_value());
+  /// assert(c.find("hello").value() == 42);
+  /// ```
+  template<typename Key_, typename Val_>
   void insert(Key_&& key, Val_&& val) requires (std::assignable_from<Key, Key_> || std::convertible_to<Key_, Key>)
                                             && (std::assignable_from<Val, Val_> || std::convertible_to<Val_, Val>)
   {
@@ -52,6 +79,22 @@ public:
   }
 
   /// Lookup a cache entry by key.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<std::string, float, 4> c;
+  ///
+  /// assert(!c.find("hello").has_value());
+  ///
+  /// c.insert("hello", 42);
+  ///
+  /// assert(c.find("hello").has_value());
+  /// assert(c.find("hello").value() == 42);
+  /// ```
   [[nodiscard]] std::optional<std::reference_wrapper<Val>> find(const Key& key) {
     const auto slot = std::ranges::find_if(buffer, [&key](const auto& fSlot) { return !fSlot.empty && (fSlot.key == key); });
     if (slot != buffer.cend()) {
