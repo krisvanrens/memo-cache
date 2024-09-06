@@ -30,7 +30,7 @@ TEST_SUITE("memo_cache")
     CHECK_EQ(c.find("hello").value(), 42);
   }
 
-  TEST_CASE("Contains")
+  TEST_CASE("contains")
   {
     mc::memo_cache<std::string, int, 3> c;
 
@@ -41,7 +41,7 @@ TEST_SUITE("memo_cache")
     CHECK(c.contains("hello"));
   }
 
-  TEST_CASE("Clear")
+  TEST_CASE("clear")
   {
     mc::memo_cache<std::string, int, 3> c;
 
