@@ -29,9 +29,22 @@ In C++ for example, This lookup complexity is easily outperformed by `find()` on
 
 ## Usage
 
-This library is written in C++20, and can be used as a single-header library by directly including the file `include/memo_cache.hpp`.
+This library requires a C++20 compiler, and can be used as a single-header library by directly including the file `include/memo_cache.hpp`.
 
-It can be used like this:
+It can be used like this (using `find_or_insert_with`):
+
+```c++
+// A function performing expensive, deterministic calculations.
+float calculate(int input) {
+  static mc::memo_cache<int, float> cache;
+
+  return cache.find_or_insert_with(input, [](auto& key) {
+    return /* ..some expensive calculation.. */;
+  });
+}
+```
+
+Or like this (using separate `find` and `insert` calls):
 
 ```c++
 // A function performing expensive, deterministic calculations.
