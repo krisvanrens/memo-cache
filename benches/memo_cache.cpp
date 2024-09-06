@@ -10,7 +10,7 @@ constexpr auto INPUT_VARIANCE = 100;
 
 #define MemoCacheBench_impl(s) \
   static void MemoCache##s(benchmark::State& state) { \
-    memo_cache<int, int, s> c; \
+    mc::memo_cache<int, int, s> c; \
     \
     std::random_device device{}; \
     std::mt19937 generator{device()}; \
@@ -43,7 +43,7 @@ static void OrderedMap(benchmark::State& state) {
   std::random_device device{};
   std::mt19937 generator{device()};
   std::normal_distribution<> distribution{0, INPUT_VARIANCE};
-  
+
   for (auto _ : state) {
     const auto x = static_cast<int>(distribution(generator));
     if (const auto v = c.find(x); v != c.cend()) {
@@ -61,7 +61,7 @@ static void UnorderedMap(benchmark::State& state) {
   std::random_device device{};
   std::mt19937 generator{device()};
   std::normal_distribution<> distribution{0, INPUT_VARIANCE};
-  
+
   for (auto _ : state) {
     const auto x = static_cast<int>(distribution(generator));
     if (const auto v = c.find(x); v != c.cend()) {

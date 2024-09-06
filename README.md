@@ -29,14 +29,14 @@ In C++ for example, This lookup complexity is easily outperformed by `find()` on
 
 ## Usage
 
-This library is written in C++20, and can be used as a single-header library by directly including the file `cpp/include/memo_cache.hpp`.
+This library is written in C++20, and can be used as a single-header library by directly including the file `include/memo_cache.hpp`.
 
 It can be used like this:
 
 ```c++
 // A function performing expensive, deterministic calculations.
 float calculate(int input) {
-  static memo_cache<int, float> cache;
+  static mc::memo_cache<int, float> cache;
 
   float result{};
 

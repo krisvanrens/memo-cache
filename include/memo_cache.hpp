@@ -8,6 +8,8 @@
 #include <optional>
 #include <utility>
 
+namespace mc {
+
 inline namespace v1 {
 
 ///
@@ -149,3 +151,5 @@ public:
 };
 
 } // namespace v1
+
+} // namespace mc

@@ -13,14 +13,14 @@ TEST_SUITE("memo_cache")
   {
     constexpr std::size_t SIZE = 16;
 
-    memo_cache<std::string, int, SIZE> c;
+    mc::memo_cache<std::string, int, SIZE> c;
 
     CHECK_EQ(c.size(), SIZE);
   }
 
   TEST_CASE("Contains")
   {
-    memo_cache<std::string, int, 3> c;
+    mc::memo_cache<std::string, int, 3> c;
 
     CHECK_FALSE(c.contains("hello"));
 
@@ -31,7 +31,7 @@ TEST_SUITE("memo_cache")
 
   TEST_CASE("Clear")
   {
-    memo_cache<std::string, int, 3> c;
+    mc::memo_cache<std::string, int, 3> c;
 
     CHECK_FALSE(c.find("hello").has_value());
 
@@ -47,7 +47,7 @@ TEST_SUITE("memo_cache")
 
   TEST_CASE("Empty cache")
   {
-    memo_cache<bool, bool, 2> c;
+    mc::memo_cache<bool, bool, 2> c;
 
     // NOTE: Even though the cache memory is pre-allocated, each cache slot should be marked as "empty".
     CHECK_FALSE(c.find(true).has_value());
@@ -56,7 +56,7 @@ TEST_SUITE("memo_cache")
 
   TEST_CASE("Non-empty cache")
   {
-    memo_cache<std::string, int, 3> c;
+    mc::memo_cache<std::string, int, 3> c;
 
     const std::array<std::pair<std::string, int>, 3> KVS = {std::make_pair("veni", 19), std::make_pair("vidi", 23), std::make_pair("vici", 29)};
 
@@ -102,7 +102,7 @@ TEST_SUITE("memo_cache")
 
   TEST_CASE("Duplicate insertions")
   {
-    memo_cache<std::string, int, 2> c;
+    mc::memo_cache<std::string, int, 2> c;
 
     const auto KV0 = std::make_pair("John", 17);
     const auto KV1 = std::make_pair("Doe", 19);
@@ -136,7 +136,7 @@ TEST_SUITE("memo_cache")
 
   TEST_CASE("Static type properties")
   {
-    using Cache = memo_cache<std::string, std::string, 8>;
+    using Cache = mc::memo_cache<std::string, std::string, 8>;
 
     // The cache is semiregular:
     static_assert(std::is_constructible_v<Cache>);
