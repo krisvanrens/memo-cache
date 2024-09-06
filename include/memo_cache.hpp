@@ -5,6 +5,7 @@
 #include <concepts>
 #include <cstddef>
 #include <functional>
+#include <iterator>
 #include <optional>
 #include <utility>
 
@@ -104,6 +105,12 @@ public:
     } else {
       return std::nullopt;
     }
+  }
+
+  /// ...
+  template<std::indirect_unary_predicate F>
+  [[nodiscard]] std::reference_wrapper<Val> find_or_insert_with(const Key& key, F f) {
+    // TODO
   }
 
   /// Returns `true` if the cache contains a value for the specified key.
