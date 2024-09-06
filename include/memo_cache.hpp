@@ -5,6 +5,7 @@
 #include <concepts>
 #include <cstddef>
 #include <functional>
+#include <iterator>
 #include <optional>
 #include <utility>
 
@@ -30,6 +31,19 @@ class memo_cache {
 
   buffer_t buffer;
   std::size_t cursor{};
+
+  /// Replace slot under cursor and shift cursor position. Returns a reference to the replaced slot value.
+  template<typename Key_, typename Val_>
+  Val& replace_and_shift(Key_&& key, Val_&& val) {
+    buffer[cursor] = {.key = std::forward<Key_>(key), .val = std::forward<Val_>(val), .empty = false};
+
+    auto& value = buffer[cursor].val;
+
+    // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
+    cursor = (cursor + 1) % Size; // Wrap; overwrite the oldest element next time around.
+
+    return value;
+  }
 
 public:
   /// Get the (fixed) size of the cache.
@@ -73,10 +87,7 @@ public:
     if (auto found = find(key); found) {
       found.value().get() = std::forward<Val_>(val);
     } else {
-      buffer[cursor] = {.key = std::forward<Key_>(key), .val = std::forward<Val_>(val), .empty = false};
-
-      // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
-      cursor = (cursor + 1) % Size; // Wrap; overwrite the oldest element next time around.
+      replace_and_shift(std::forward<Key_>(key), std::forward<Val_>(val));
     }
   }
 
@@ -103,6 +114,34 @@ public:
       return std::ref(slot->val);
     } else {
       return std::nullopt;
+    }
+  }
+
+  /// Get a value, or, if it does not exist in the cache, insert it using the value computed by `f`.
+  /// Returns a reference to the found, or newly inserted value associated with the given key.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<int, std::string, 4> c;
+  ///
+  /// assert(!c.contains(42));
+  ///
+  /// auto v = c.find_or_insert_with(42, [] { return "The Answer"; });
+  ///
+  /// assert(v == "The Answer");
+  /// assert(c.find(42).has_value());
+  /// assert(c.find(42).value() == "The Answer");
+  /// ```
+  template<typename F>
+  [[nodiscard]] std::reference_wrapper<Val> find_or_insert_with(const Key& key, F f) {
+    if (auto slot = find(key); slot) {
+      return *slot;
+    } else {
+      return replace_and_shift(key, f(key));
     }
   }
 

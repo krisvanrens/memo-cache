@@ -18,7 +18,54 @@ TEST_SUITE("memo_cache")
     CHECK_EQ(c.size(), SIZE);
   }
 
-  TEST_CASE("Contains")
+  TEST_CASE("find")
+  {
+    mc::memo_cache<std::string, int, 3> c;
+
+    CHECK_FALSE(c.find("hello").has_value());
+
+    c.insert("hello", 42);
+
+    REQUIRE(c.find("hello").has_value());
+    CHECK_EQ(c.find("hello").value(), 42);
+  }
+
+  TEST_CASE("find_or_insert_with")
+  {
+    mc::memo_cache<std::string, int, 3> c;
+
+    CHECK_FALSE(c.contains("hello"));
+    CHECK_FALSE(c.contains("hi"));
+
+    CHECK_EQ(c.find_or_insert_with("hello", [](auto& k) {
+                 CHECK_EQ(k, "hello");
+                 return 42;
+               }),
+             42);
+
+    REQUIRE(c.contains("hello"));
+    CHECK_EQ(c.find("hello").value(), 42);
+    CHECK_FALSE(c.contains("hi"));
+
+    CHECK_EQ(c.find_or_insert_with("hi", [](auto& k) {
+                 CHECK_EQ(k, "hi");
+                 return 17;
+               }),
+             17);
+
+    REQUIRE(c.contains("hello"));
+    CHECK_EQ(c.find("hello").value(), 42);
+    REQUIRE(c.contains("hi"));
+    CHECK_EQ(c.find("hi").value(), 17);
+
+    CHECK_EQ(c.find_or_insert_with("hello", []([[maybe_unused]] auto& _) {
+                 CHECK(false);
+                 return 13; // NOTE: Key already exists, this value is not used.
+               }),
+             42);
+  }
+
+  TEST_CASE("contains")
   {
     mc::memo_cache<std::string, int, 3> c;
 
@@ -29,7 +76,7 @@ TEST_SUITE("memo_cache")
     CHECK(c.contains("hello"));
   }
 
-  TEST_CASE("Clear")
+  TEST_CASE("clear")
   {
     mc::memo_cache<std::string, int, 3> c;
 
