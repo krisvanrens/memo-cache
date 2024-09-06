@@ -18,6 +18,18 @@ TEST_SUITE("memo_cache")
     CHECK_EQ(c.size(), SIZE);
   }
 
+  TEST_CASE("find")
+  {
+    mc::memo_cache<std::string, int, 3> c;
+
+    CHECK_FALSE(c.find("hello").has_value());
+
+    c.insert("hello", 42);
+
+    REQUIRE(c.find("hello").has_value());
+    CHECK_EQ(c.find("hello").value(), 42);
+  }
+
   TEST_CASE("Contains")
   {
     mc::memo_cache<std::string, int, 3> c;
