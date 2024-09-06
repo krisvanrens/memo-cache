@@ -103,6 +103,29 @@ public:
       return std::nullopt;
     }
   }
+
+  /// Clear the cache.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// memo_cache<std::string, float, 4> c;
+  ///
+  /// c.insert("hello", 42);
+  ///
+  /// assert(c.find("hello").has_value());
+  /// assert(c.find("hello").value() == 42);
+  ///
+  /// c.clear();
+  ///
+  /// assert(!c.find("hello").has_value());
+  /// ```
+  void clear() {
+    buffer = {};
+  }
 };
 
 } // namespace v1

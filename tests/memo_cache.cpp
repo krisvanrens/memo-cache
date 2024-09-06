@@ -18,6 +18,22 @@ TEST_SUITE("memo_cache")
     CHECK_EQ(c.size(), SIZE);
   }
 
+  TEST_CASE("Clear")
+  {
+    memo_cache<std::string, int, 3> c;
+
+    CHECK_FALSE(c.find("hello").has_value());
+
+    c.insert("hello", 42);
+
+    REQUIRE(c.find("hello").has_value());
+    CHECK_EQ(c.find("hello").value(), 42);
+
+    c.clear();
+
+    CHECK_FALSE(c.find("hello").has_value());
+  }
+
   TEST_CASE("Empty cache")
   {
     memo_cache<bool, bool, 2> c;
