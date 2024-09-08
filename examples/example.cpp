@@ -21,9 +21,7 @@ struct Process {
   mc::memo_cache<int, float, 32> cache2;
 
   /// Regular method, taking the calculation penalty, always.
-  float regular(int input) {
-    return some_expensive_calculation(input);
-  }
+  float regular(int input) { return some_expensive_calculation(input); }
 
   /// Memoized method, using a `std::unordered_map` cache (no retention management).
   float memoized1(int input) {
@@ -49,9 +47,7 @@ struct Process {
 
   /// Memoized method, using a `MemoCache` cache (using `get_or_insert_with`).
   float memoized2b(int input) {
-    return cache2.find_or_insert_with(input, [](int i) {
-      return some_expensive_calculation(i);
-    });
+    return cache2.find_or_insert_with(input, [](int i) { return some_expensive_calculation(i); });
   }
 };
 
@@ -71,8 +67,8 @@ int main() {
   // cache and will perform at best as good as the hash map cache version,
   // and in the worst case as bad as the regular (non-memoized) method.
 
-  std::random_device         rd;
-  std::mt19937               generator(rd());
+  std::random_device rd;
+  std::mt19937 generator(rd());
   std::normal_distribution<> dist(0.0, 30.0);
 
   // Use the same input data for all tests:
@@ -89,22 +85,26 @@ int main() {
   using clock = std::chrono::system_clock;
 
   auto start = clock::now();
-  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f, [&p](float sum, int i) { return sum + p.regular(i); });
+  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f,
+              [&p](float sum, int i) { return sum + p.regular(i); });
 
   const auto d_regular = clock::now() - start;
 
   start = clock::now();
-  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f, [&p](float sum, int i) { return sum + p.memoized1(i); });
+  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f,
+              [&p](float sum, int i) { return sum + p.memoized1(i); });
 
   const auto d_memoized1 = clock::now() - start;
 
   start = clock::now();
-  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f, [&p](float sum, int i) { return sum + p.memoized2a(i); });
+  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f,
+              [&p](float sum, int i) { return sum + p.memoized2a(i); });
 
   const auto d_memoized2a = clock::now() - start;
 
   start = clock::now();
-  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f, [&p](float sum, int i) { return sum + p.memoized2b(i); });
+  std::reduce(inputs.cbegin(), inputs.cend(), 0.0f,
+              [&p](float sum, int i) { return sum + p.memoized2b(i); });
 
   const auto d_memoized2b = clock::now() - start;
 
@@ -119,6 +119,8 @@ int main() {
   const auto get_size = [](std::size_t capacity) { return capacity * (sizeof(int) + sizeof(float)); };
 
   std::cout << "Post-test occupied cache sizes:\n";
-  std::cout << std::format("  Hash:      {} bytes\n", get_size(p.cache1.size()));
-  std::cout << std::format("  MemoCache: {} bytes\n", get_size(p.cache2.size()));
+  std::cout << std::format("  std::unordered_map: {} bytes\n", get_size(p.cache1.size()));
+  std::cout << std::format("  memo_cache:         {} bytes\n", get_size(p.cache2.size()));
 }
+
+// Compiler Explorer: https://www.godbolt.org/z/qaezrq78P

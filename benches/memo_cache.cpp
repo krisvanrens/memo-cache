@@ -1,4 +1,4 @@
-#include "memocache.hpp"
+#include <memocache.hpp>
 
 #include <map>
 #include <random>
@@ -18,7 +18,7 @@ constexpr auto INPUT_VARIANCE = 100;
     \
     for (auto _ : state) { \
       auto v = c.find_or_insert_with(static_cast<int>(distribution(generator)), \
-                                     [](auto& k) { return k; }); \
+                                     [](const auto& k) { return k; }); \
       benchmark::DoNotOptimize(v); \
     } \
   } \
@@ -44,8 +44,8 @@ constexpr auto INPUT_VARIANCE = 100;
 static void OrderedMap(benchmark::State& state) {
   std::map<int, int> c;
 
-  std::random_device device{};
-  std::mt19937 generator{device()};
+  std::random_device         device{};
+  std::mt19937               generator{device()};
   std::normal_distribution<> distribution{0, INPUT_VARIANCE};
 
   for (auto _ : state) {

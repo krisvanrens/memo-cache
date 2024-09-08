@@ -67,6 +67,10 @@ float calculate(int input) {
 Generally speaking, the use of `static` variables in functions are not desirable as they introduce (hidden) global state.
 Always try to have the cache be stored non-statically as a class member for methods for example.
 
+### Example
+
+An example program comparing `std::unordered_map` with `mc::memo_cache` can be found [here](example/example.cpp) (and on [the excellent Compiler Explorer](https://www.godbolt.org/z/qaezrq78P)).
+
 ### Test build instructions
 
 Install `doctest-dev` from the package repository, or get it [here](https://github.com/doctest/doctest).
@@ -80,7 +84,7 @@ clang++-18 -std=c++20 -Wall -Wextra -Werror -Wconversion -O3 -I../include ../tes
 
 ### Benchmark
 
-See here: https://quick-bench.com/q/NG9pFDcSWBmG3xWWoL_O45IgDUk
+See a benchmark of `mc::memo_cache` against `std::map` and `std::unordered_map` [here at Quick-Bench](https://quick-bench.com/q/5Ga72_Fxi8V8eq7kXwk2WZAaFps).
 
 ## TODO
 
