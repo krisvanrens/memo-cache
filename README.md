@@ -69,7 +69,7 @@ Always try to have the cache be stored non-statically as a class member for meth
 
 ### Example
 
-An example program comparing `std::unordered_map` with `mc::memo_cache` can be found [here](example/example.cpp) (and on [the excellent Compiler Explorer](https://www.godbolt.org/z/qaezrq78P)).
+An example program comparing `std::unordered_map` with `mc::memo_cache` can be found [here](examples/example.cpp) (and on [the excellent Compiler Explorer](https://www.godbolt.org/z/KExn3fxjx)).
 
 ### Test build instructions
 

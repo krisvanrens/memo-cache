@@ -111,16 +111,17 @@ int main() {
   std::cout << "Done. Timing results:\n";
 
   using Ms = std::chrono::milliseconds;
-  std::cout << std::format("Regular:                {} ms\n", std::chrono::duration_cast<Ms>(d_regular).count());
-  std::cout << std::format("Memoized (hash):        {} ms\n", std::chrono::duration_cast<Ms>(d_memoized1).count());
-  std::cout << std::format("Memoized (MemoCache A): {} ms\n", std::chrono::duration_cast<Ms>(d_memoized2a).count());
-  std::cout << std::format("Memoized (MemoCache B): {} ms\n", std::chrono::duration_cast<Ms>(d_memoized2b).count());
+  std::cout << std::format("Regular:                  {} ms\n", std::chrono::duration_cast<Ms>(d_regular).count());
+  std::cout << std::format("Memoized (unordered_map): {} ms\n", std::chrono::duration_cast<Ms>(d_memoized1).count());
+  std::cout << std::format("Memoized (memo_cache A):  {} ms\n", std::chrono::duration_cast<Ms>(d_memoized2a).count());
+  std::cout << std::format("Memoized (memo_cache B):  {} ms\n", std::chrono::duration_cast<Ms>(d_memoized2b).count());
 
   const auto get_size = [](std::size_t capacity) { return capacity * (sizeof(int) + sizeof(float)); };
 
   std::cout << "Post-test occupied cache sizes:\n";
-  std::cout << std::format("  std::unordered_map: {} bytes\n", get_size(p.cache1.size()));
-  std::cout << std::format("  memo_cache:         {} bytes\n", get_size(p.cache2.size()));
+  std::cout << std::format("  unordered_map: {} bytes\n", get_size(p.cache1.size()));
+  std::cout << std::format("  memo_cache:    {} bytes\n", get_size(p.cache2.size()));
 }
 
-// Compiler Explorer: https://www.godbolt.org/z/qaezrq78P
+
+// Compiler Explorer: https://www.godbolt.org/z/KExn3fxjx
