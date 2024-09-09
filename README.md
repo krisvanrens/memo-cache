@@ -84,7 +84,7 @@ clang++-18 -std=c++20 -Wall -Wextra -Werror -Wconversion -O3 -I../include ../tes
 
 ### Benchmark
 
-See a benchmark of `mc::memo_cache` against `std::map` and `std::unordered_map` [here at Quick-Bench](https://quick-bench.com/q/5Ga72_Fxi8V8eq7kXwk2WZAaFps).
+See a benchmark of `mc::memo_cache` against `std::map` and `std::unordered_map` [here at Quick-Bench](https://quick-bench.com/q/bKiXkiq2RCEJfTiz2NusOvaY9rI).
 
 ## TODO
 
