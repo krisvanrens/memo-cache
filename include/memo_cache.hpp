@@ -113,9 +113,9 @@ public:
     if (slot != buffer.cend()) {
       // SAFETY: The slot value was found by definition.
       return std::ref(*slot->val);
-    } else {
-      return std::nullopt;
     }
+
+    return std::nullopt;
   }
 
   /// Get a value, or, if it does not exist in the cache, insert it using the value computed by `f`.
@@ -141,9 +141,9 @@ public:
   [[nodiscard]] std::reference_wrapper<Val> find_or_insert_with(const Key& key, F f) {
     if (auto slot = find(key); slot) {
       return *slot;
-    } else {
-      return replace_and_shift(key, f(key));
     }
+
+    return replace_and_shift(key, f(key));
   }
 
   /// Returns `true` if the cache contains a value for the specified key.
