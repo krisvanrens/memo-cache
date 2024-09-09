@@ -22,9 +22,8 @@ class memo_cache {
   static_assert(Size <= 128, "Semantic constraint: use this cache for small sizes only (see performance notes).");
 
   template<typename K = Key, typename V = Val> struct key_value_slot_t {
-    K key;
-    V val;
-    bool empty = true;
+    K                key;
+    std::optional<V> val;
   };
 
   using buffer_t = std::array<key_value_slot_t<Key, Val>, Size>;
@@ -35,9 +34,10 @@ class memo_cache {
   /// Replace slot under cursor and shift cursor position. Returns a reference to the replaced slot value.
   template<typename Key_, typename Val_>
   Val& replace_and_shift(Key_&& key, Val_&& val) {
-    buffer[cursor] = {.key = std::forward<Key_>(key), .val = std::forward<Val_>(val), .empty = false};
+    buffer[cursor] = {.key = std::forward<Key_>(key), .val = {std::forward<Val_>(val)}};
 
-    auto& value = buffer[cursor].val;
+    // SAFETY: The option value is occupied above.
+    auto& value = *(buffer[cursor].val);
 
     // Move the cursor over the buffer elements sequentially, creating FIFO behavior.
     cursor = (cursor + 1) % Size; // Wrap; overwrite the oldest element next time around.
@@ -109,9 +109,10 @@ public:
   /// assert(c.find("hello").value() == 42);
   /// ```
   [[nodiscard]] std::optional<std::reference_wrapper<Val>> find(const Key& key) {
-    const auto slot = std::ranges::find_if(buffer, [&key](const auto& fSlot) { return !fSlot.empty && (fSlot.key == key); });
+    const auto slot = std::ranges::find_if(buffer, [&key](const auto& fSlot) { return fSlot.val && (fSlot.key == key); });
     if (slot != buffer.cend()) {
-      return std::ref(slot->val);
+      // SAFETY: The slot value was found by definition.
+      return std::ref(*slot->val);
     } else {
       return std::nullopt;
     }
@@ -162,7 +163,7 @@ public:
   /// assert(c.contains(42));
   /// ```
   [[nodiscard]] bool contains(const Key& key) const {
-    return std::ranges::any_of(buffer, [&key](const auto& fSlot) { return !fSlot.empty && (fSlot.key == key); });
+    return std::ranges::any_of(buffer, [&key](const auto& fSlot) { return fSlot.val && (fSlot.key == key); });
   }
 
   /// Clear the cache.
