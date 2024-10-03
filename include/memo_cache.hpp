@@ -4,6 +4,7 @@
 #include <array>
 #include <concepts>
 #include <cstddef>
+#include <expected>
 #include <functional>
 #include <iterator>
 #include <optional>
@@ -144,6 +145,43 @@ public:
     }
 
     return replace_and_shift(key, f(key));
+  }
+
+  /// Get a value, or, if it does not exist in the cache, insert it using the value computed by f.
+  /// Returns a result with a reference to the found, or newly inserted value associated with the given key.
+  /// If f fails, the error is returned.
+  /// If a value is inserted, the key is cloned.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// #include <cassert>
+  /// #include <memo_cache.hpp>
+  ///
+  /// mc::memo_cache<int, std::string, 4> c;
+  ///
+  /// assert(!c.contains(42));
+  ///
+  /// auto v1 = c.find_or_try_insert_with(42,
+  ///   [] -> std::expected<std::string, std::string> { return "The Answer"; });
+  ///
+  /// assert(v1 == "The Answer");
+  /// assert(c.find(42).has_value());
+  /// assert(c.find(42).value() == "The Answer");
+  ///
+  /// auto v2 = c.find_or_try_insert_with(42,
+  ///   [] -> std::expected<std::string, std::string> { return std::unexpected{"Dunno"}; });
+  ///
+  /// assert(!v2.has_value());
+  /// assert(v2.error() == "Dunno");
+  /// ```
+  template<typename Error>
+  [[nodiscard]] std::expected<std::reference_wrapper<Val>, Error> find_or_try_insert_with(const Key& key, std::function<std::expected<Val, Error>(const Key&)> &&f) {
+    if (auto slot = find(key); slot) {
+      return *slot;
+    }
+
+    return f(key).transform([&](auto v) { return replace_and_shift(key, std::move(v)); });
   }
 
   /// Returns `true` if the cache contains a value for the specified key.
